@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using API.Extension;
+using Application.Activities;
+using Application.Core;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Persistence;
 
 
@@ -18,19 +19,7 @@ namespace API
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers();
-			services.AddEndpointsApiExplorer();
-			services.AddSwaggerGen();
-			services.AddDbContext<DataContext>(options =>
-			{
-				options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-			});
-			services.AddCors(options =>
-			{
-				options.AddPolicy("CorsPolicy", policy =>
-				{
-					policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
-				});
-			});
+			services.AddApplicationServices(_config);
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

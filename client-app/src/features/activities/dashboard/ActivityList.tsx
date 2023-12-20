@@ -6,10 +6,18 @@ interface Props {
 	  activities: Activity[];
 	  selectActivity: (id: string) => void;
 	  deleteActivity: (id: string) => void;
+	  submitting: boolean;
 }
 
-export default function ActivityList({activities,selectActivity, deleteActivity}: Props) {
-  return (
+export default function ActivityList({activities,selectActivity, deleteActivity, submitting}: Props) {
+  const [target, setTarget] = React.useState('' as any);
+
+  function handleActivityDelete(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) {
+	setTarget(e.currentTarget.name);
+	deleteActivity(id);
+  }
+	
+	return (
 	<Segment>
 		<Item.Group divided>
 			{activities.map(activity => (
@@ -23,7 +31,14 @@ export default function ActivityList({activities,selectActivity, deleteActivity}
 						</Item.Description>
 						<Item.Extra>
 							<Button onClick={() => selectActivity(activity.id)} floated='right' content='View' color='teal'/>
-							<Button onClick={() => deleteActivity(activity.id)} floated='right' content='Delete' color='red'/>
+							<Button 
+								name={activity.id}
+								loading={submitting && target === activity.id}
+								onClick={(e) => handleActivityDelete(e,activity.id)}
+								floated='right' 
+								content='Delete' 
+								color='red'
+							/>
 							<Label basic content={activity.category}/>
 						</Item.Extra>
 					</Item.Content>
